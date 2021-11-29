@@ -2,17 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { AxiosResponse } from 'axios';
 import { api } from './client/api';
 
-import {
-  WorkResponse,
-  Work,
-  Relation,
-  IArtist,
-} from './interfaces/workResponse';
+import { WorkResponse, Work, Relation } from './interfaces/workResponse';
 import { ArtistSearch, Artist } from './interfaces/artistsResponse';
+import { AlbumResponse, Album, ArtistCredit } from './interfaces/album';
 
 @Injectable()
 export class AppService {
-  async searchArtist(artistName: string) {
+  async searchArtistsByName(artistName: string) {
+    //recebe uma string com nome de um artista e retorna todos os artistas relacionados a esse nome
     try {
       const res: AxiosResponse<ArtistSearch> = await api.get(
         `/artist?query=${artistName}&fmt=json`,
@@ -23,14 +20,15 @@ export class AppService {
       const names = data.artists.map((artist: Artist) => {
         return { name: artist.name, type: artist.type, id: artist.id };
       });
-      console.log(data);
+      console.log(names);
       return names;
     } catch (err) {
       console.log(err);
     }
   }
 
-  async searchWork(workName: string) {
+  async searchWorksByName(workName: string) {
+    // recebe uma string com nome de uma obra e retorna todas as obras relacionadas com o nome
     const formattedString = workName.replace(/\s/g, '+');
 
     try {
@@ -68,7 +66,8 @@ export class AppService {
     }
   }
 
-  async browserWorks(id: string) {
+  async searchWorksByArtist(id: string) {
+    // recebe um id de um artista e retorna as obras dele
     try {
       const res = await api.get(`/work?artist=${id}&limit=300&fmt=json`);
       const data: WorkResponse = res.data;
@@ -84,9 +83,36 @@ export class AppService {
     }
   }
 
+  async searchAlbumByName(albumName: string) {
+    // Busca um Álbum pelo nome
+    try {
+      const res = await api.get(
+        `/release-group/?query=release:${albumName}&fmt=json`,
+      );
+      const data: AlbumResponse = res.data;
+      const albums = data['release-groups'].map((album: Album) => {
+        const artist = album['artist-credit'].map((artist: ArtistCredit) => {
+          return artist.name;
+        });
+
+        return {
+          title: album.title,
+          id: album.id,
+          artist: artist,
+          date: album['first-release-date'],
+        };
+      });
+
+      console.log(albums);
+      return albums;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async findWork(id: string) {
     try {
-      const res = await api.get(`/artist?work=${id}&fmt=json`);
+      const res = await api.get(`/work/${id}?inc=artist-rels&fmt=json`);
 
       console.log(res.data);
     } catch (error) {
