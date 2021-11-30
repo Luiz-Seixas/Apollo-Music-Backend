@@ -29,11 +29,9 @@ export class AppService {
 
   async searchWorksByName(workName: string) {
     // recebe uma string com nome de uma obra e retorna todas as obras relacionadas com o nome
-    const formattedString = workName.replace(/\s/g, '+');
-
     try {
       const res: AxiosResponse<WorkResponse> = await api.get(
-        `/work?query=${formattedString}&method=indexed&fmt=json`,
+        `/work?query=${workName}&method=indexed&fmt=json`,
       );
       const data = res.data;
 
@@ -66,23 +64,6 @@ export class AppService {
     }
   }
 
-  async searchWorksByArtist(id: string) {
-    // recebe um id de um artista e retorna as obras dele
-    try {
-      const res = await api.get(`/work?artist=${id}&limit=300&fmt=json`);
-      const data: WorkResponse = res.data;
-
-      console.log(data['work-count']);
-      const Songs = data.works.map((work: Work) => {
-        console.log(work.title);
-        return work.title;
-      });
-      return Songs;
-    } catch (err) {
-      console.log('Erro', err);
-    }
-  }
-
   async searchAlbumByName(albumName: string) {
     // Busca um Álbum pelo nome
     try {
@@ -107,6 +88,23 @@ export class AppService {
       return albums;
     } catch (error) {
       console.log(error);
+    }
+  }
+
+  async searchWorksByArtist(id: string) {
+    // recebe um id de um artista e retorna as obras dele
+    try {
+      const res = await api.get(`/work?artist=${id}&limit=300&fmt=json`);
+      const data: WorkResponse = res.data;
+
+      console.log(data['work-count']);
+      const Songs = data.works.map((work: Work) => {
+        console.log(work.title);
+        return work.title;
+      });
+      return Songs;
+    } catch (err) {
+      console.log('Erro', err);
     }
   }
 
