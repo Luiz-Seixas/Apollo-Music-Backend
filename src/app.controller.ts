@@ -31,9 +31,9 @@ export class AppController {
     return this.appService.searchWorksByArtist(id);
   }
 
-  @Get('/find/:id')
-  findWork(@Param() artistObject: ISearch) {
-    const { id } = artistObject;
-    return this.appService.findWork(id);
-  }
+  // @Get('/find/:id')
+  // findWork(@Param() artistObject: ISearch) {
+  //   const { id } = artistObject;
+  //   return this.appService.findWork(id);
+  // }
 }

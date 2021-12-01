@@ -14,8 +14,6 @@ export class AppService {
       const res: AxiosResponse<ArtistSearch> = await api.get(
         `/artist?query=${artistName}&fmt=json`,
       );
-      // `/artist?query=${name}&limit=1&fmt=json`
-
       const data = res.data;
       const names = data.artists.map((artist: Artist) => {
         return { name: artist.name, type: artist.type, id: artist.id };
@@ -46,10 +44,6 @@ export class AppService {
           element == null ? false : true,
         );
 
-        console.log({
-          title: work.title,
-          artists: ArtistsFiltered,
-        });
         return {
           title: work.title,
           type: work.type,
@@ -84,7 +78,6 @@ export class AppService {
         };
       });
 
-      console.log(albums);
       return albums;
     } catch (error) {
       console.log(error);
@@ -99,7 +92,6 @@ export class AppService {
 
       console.log(data['work-count']);
       const Songs = data.works.map((work: Work) => {
-        console.log(work.title);
         return work.title;
       });
       return Songs;
@@ -108,13 +100,11 @@ export class AppService {
     }
   }
 
-  async findWork(id: string) {
-    try {
-      const res = await api.get(`/work/${id}?inc=artist-rels&fmt=json`);
-
-      console.log(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  // async findWork(id: string) {
+  //   try {
+  //     const res = await api.get(`/work/${id}?inc=artist-rels&fmt=json`);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
 }
