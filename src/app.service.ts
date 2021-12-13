@@ -36,7 +36,7 @@ export class AppService {
       const works = data.works.map((work: Work) => {
         const artists = work.relations.map((relation: Relation) => {
           if (relation.artist) {
-            return { type: relation.type, artists: relation.artist };
+            return { type: relation.type, artist: relation.artist };
           }
         });
 
@@ -92,11 +92,25 @@ export class AppService {
 
       console.log(data['work-count']);
       const Songs = data.works.map((work: Work) => {
+        // const artist = work.relations.map((relation) => {
+        //   return relation.artist;
+        // });
+        // return { work: work.title, artist: artist };
+        console.log(work);
         return work.title;
       });
       return Songs;
     } catch (err) {
       console.log('Erro', err);
+    }
+  }
+
+  async browserArtistById(artistId: string) {
+    try {
+      const res = await api.get(`/artist/${artistId}?inc=work&fmt=json`);
+      return res.data;
+    } catch (error) {
+      console.log(error);
     }
   }
 

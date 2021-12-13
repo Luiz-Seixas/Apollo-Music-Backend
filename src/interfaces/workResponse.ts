@@ -15,7 +15,7 @@ export interface Work {
   iswcs: [];
   disambiguation: string;
   languages: [];
-  relations: [];
+  relations: Relation[];
 }
 
 export interface Relation {
